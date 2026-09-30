@@ -1,0 +1,57 @@
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Scanner;
+
+public class EmployeeExperience {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // ===== Get employee details from user =====
+        System.out.print("Enter Employee Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter Employee Designation: ");
+        String designation = scanner.nextLine();
+
+        LocalDate joiningDate = null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        // Keep asking until a valid date is entered
+        while (joiningDate == null) {
+            System.out.print("Enter Joining Date (dd-MM-yyyy): ");
+            String dateInput = scanner.nextLine();
+            try {
+                joiningDate = LocalDate.parse(dateInput, formatter);
+
+                // Basic validation — joining date can't be in the future
+                if (joiningDate.isAfter(LocalDate.now())) {
+                    System.out.println("Joining date cannot be in the future. Please re-enter.");
+                    joiningDate = null;
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please use dd-MM-yyyy (e.g., 15-06-2020).");
+            }
+        }
+
+        // ===== Calculate experience =====
+        LocalDate today = LocalDate.now();
+        Period experience = Period.between(joiningDate, today);
+
+        int years = experience.getYears();
+        int months = experience.getMonths();
+        int days = experience.getDays();
+
+        // ===== Display results =====
+        System.out.println("\n----- Employee Details -----");
+        System.out.println("Name        : " + name);
+        System.out.println("Designation : " + designation);
+        System.out.println("Joining Date: " + joiningDate.format(formatter));
+        System.out.println("Today's Date: " + today.format(formatter));
+        System.out.println("Experience  : " + years + " years, " + months + " months, " + days + " days");
+
+        scanner.close();
+    }
+}
